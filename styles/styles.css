@@ -1,0 +1,235 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap');
+
+:root {
+    --color-1: #edeef0;
+    --color-2: #bcd9d7;
+    --color-3: #7ba9a9;
+    --color-4: #3a595c;
+    --color-5: #38534e;
+    --color-6: #192e2f;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter',sans-serif;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(180deg,var(--color-3),var(--color-4),var(--color-5));
+    padding: 15px;
+}
+
+.container {
+    max-width: 700px;
+    width: 100%;
+    background: var(--color-1);
+    padding: 25px 30px;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.container .title{
+    font-size: 25px;
+    font-weight: 700;
+    position: relative;
+    
+}
+
+.container .title::before{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 30px;
+    background: linear-gradient(135deg,var(--color-3),var(--color-4),var(--color-5));
+}
+
+.container form .options{
+    display: flex;
+    justify-content: space-between;
+    flex-flow: wrap;
+}
+
+form .options .input-box{
+    margin: 20px 0 12px 0;
+    width: calc(100% / 2 - 20px);
+    position: relative;
+}
+
+.options .input-box .details{
+    display: inline-block;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+form input{
+    height: 45px;
+    width: 100%;
+    outline: none;
+    display: block;
+    border-radius: 5px;
+    border: 1px solid var(--color-2);
+    padding-left: 15px;
+    font-size: 16px;
+    border-bottom-width: 2px;
+    transition: all 0.3s ease;
+}
+
+.options .input-box i{
+    position: absolute;
+    top: 40px;
+    right: 20px;
+    visibility: hidden;
+}
+
+.options .input-box small {
+    position: absolute;
+    visibility: hidden;
+}
+
+
+
+.options .input-box input:focus {
+    border-color: var(--color-5);
+}
+
+.input-box.success input {
+    border-color: #2ecc71;
+}
+
+.input-box.error input{
+    border-color: #e74c3c;
+}
+
+.input-box.success i.fa-check-circle {
+    color: #2ecc71;
+    visibility: visible;
+}
+
+.input-box.error i.fa-exclamation-circle {
+    color: #e74c3c;
+    visibility: visible;
+}
+
+.input-box.success small {
+    color: #2ecc71;
+    visibility: hidden;
+}
+
+.input-box.error small {
+    color: #e74c3c;
+    visibility: visible;
+}
+
+
+
+.toggle {
+    --width: 40px;
+    --height: calc(var(--width)/2);
+    --border-radius: calc(var(--height)/2);
+    display: flex;
+    /* flex-flow: column wrap; */
+    /* align-items: baseline; */
+    width: 100%;
+    margin: 14px 0;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 25px;
+}
+
+.toggle__input {
+    display: none;
+}
+
+.toggle__fill {
+    position: relative;
+    width: var(--width);
+    height: var(--height);
+    border-radius: var(--border-radius);
+    background: #dddddd;
+    margin-right: 10px;
+    transition: background 0.2s;
+}
+
+.toggle__input:checked ~ .toggle__fill {
+    background: #009578;
+}
+
+.toggle__fill::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: var(--height);
+    width: var(--height);
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.25);
+    border-radius: var(--border-radius);
+    transition: transform .2s;
+}
+
+.toggle__input:checked ~ .toggle__fill::after{
+    transform: translateX(var(--height));
+}
+
+form .button {
+    height: 45px;
+    margin: 10px 0 10px 0;
+    width: 100%;
+    
+}
+
+form input[type = 'submit'] {
+    height: 100%;
+    width: 100%;
+    outline: none;
+    color: var(--color-1);
+    border: none;
+    font-size: 18px;
+    font-weight: normal;
+    border-radius: 5px;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg,var(--color-3),var(--color-5),var(--color-6));
+    opacity: .9;
+    transition: all 0.3s ease;
+}
+
+form input[type = 'submit']:hover{
+    /* background: linear-gradient(135deg,var(--color-6),var(--color-5),var(--color-3)); */
+    opacity: 1;
+}
+
+@media (max-width: 584px){
+    .container{
+        max-width: 100%;
+    }
+
+    .container .title{
+        margin: 5px 0;
+        
+    }
+
+    form .options .input-box {
+        margin-bottom: 15px;
+        width: 100%;
+    }
+    form .toggle {
+        width: 100%;
+    }
+
+    .container form .options {
+        max-height: 350px;
+        overflow-y: scroll;
+    }
+
+    .options::-webkit-scrollbar{
+        width: 5px;
+    }
+}
