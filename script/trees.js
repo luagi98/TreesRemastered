@@ -3,6 +3,7 @@ class Graph {
     constructor(numVertices) {
         this.numVertices = numVertices;
         this.adjList = new Map();
+        this.brokerSearch = false
     }
 
     addNode(node) {
@@ -20,6 +21,55 @@ class Graph {
             for (let value of nodeValues)
                 conc += `${value} `;
             console.log(`${node} -> ${conc}`);
+        }
+    }
+    dfs(startingNode, Goal) {
+        let visited = {};
+        this.DFSUtil(startingNode, Goal, visited);
+
+    }
+
+    DFSUtil(initNode, Goal, visited) {
+        if (this.brokerSearch)
+            return
+        visited[initNode] = true;
+        console.log(initNode);
+        let get_neighbours = this.adjList.get(initNode);
+        for (let i in get_neighbours) {
+            let get_elem = get_neighbours[i];
+            if (get_elem === Goal) {
+                console.log({ Goal });
+                this.brokerSearch = true
+                return true
+            }
+            if (!visited[get_elem])
+                if (this.DFSUtil(get_elem, Goal, visited)) {
+                    break
+                }
+        }
+        return false
+    }
+
+    bfs(startingNode, Goal) {
+        let visited = {};
+        let q = []
+        visited[startingNode] = true;
+        q.push(startingNode);
+        while (q.length > 0) {
+            let getQueueElement = q.shift()
+            console.log(getQueueElement);
+            let get_List = this.adjList.get(getQueueElement);
+            for (let i in get_List) {
+                let neigh = get_List[i];
+                if (Goal === neigh) {
+                    console.log({ Goal });
+                    return
+                }
+                if (!visited[neigh]) {
+                    visited[neigh] = true;
+                    q.push(neigh);
+                }
+            }
         }
     }
 }
@@ -59,12 +109,17 @@ const options = {
     },
 };
 
+
+const DFSButton = document.getElementById("dfsButton")
+const BFSButton = document.getElementById("bfsButton")
+
 const initTree = () => {
     generateNodes()
     generateBasicEdges()
     const [remainingNodesInLastLevel, levelToStart, filledLevel, startNode] = generateRemainingParents();
     generateRemainingNodes(remainingNodesInLastLevel, levelToStart, filledLevel, startNode)
     network = new vis.Network(container, data, options);
+    tree.printGraph()
 }
 
 const generateNodes = () => {
@@ -74,6 +129,7 @@ const generateNodes = () => {
         } else {
             nodes.add([{ id: index, label: ` ${index} `, title: `Node ${index}`, color: `#3a595c`, font: { color: '#edeef0' } }]);
         }
+        tree.addNode(index)
     }
 }
 
@@ -81,12 +137,15 @@ const generateBasicEdges = () => {
     let numberParentNodes = nodosPadre
     for (let i = 0; i < amplitud; i++) {
         edges.add([{ from: 1, to: i + 2 }]);
+        tree.addEdge(1, i + 2)
     }
 
     edges.add([{ from: 2, to: amplitud + 2 }]);
+    tree.addEdge(2, amplitud + 2)
 
     for (let index = 0; index < minParents - 2; index++) {
         edges.add([{ from: index + amplitud + 2, to: index + amplitud + 3 }]);
+        tree.addEdge(index + amplitud + 2, index + amplitud + 3)
     }
     // console.log(data);
 }
@@ -102,8 +161,10 @@ const generateRemainingParents = () => {
         if (remainingNodesInLevel !== nivel) {
             // console.log(`remainingNodes: ${remainingNodesInLevel}, firstParent: ${firstParent}`);
             if (remainingNodesInLevel == 2) {
+                tree.addEdge(firstParent, startNode)
                 edges.add([{ from: firstParent, to: startNode++ }]);
             } else {
+                tree.addEdge(startNode - 1, startNode)
                 edges.add([{ from: startNode - 1, to: startNode++ }]);
             }
             remainingNodesInLevel++
@@ -136,6 +197,7 @@ const generateRemainingNodes = (RNILL, levelToStart, filledLevel, startNode) => 
         // console.log({ startNodeFilling });
         while (remainingNodes--) {
             if (remainingAmplitud > 0) {
+                tree.addEdge(levelToStart ?? 1, startNode);
                 edges.add([{ from: levelToStart, to: startNode++ }]);
                 remainingAmplitud--
             } else {
@@ -154,3 +216,6 @@ const generateRemainingNodes = (RNILL, levelToStart, filledLevel, startNode) => 
 }
 
 initTree()
+
+DFSButton.addEventListener('click', () => tree.dfs(1, nodoMeta))
+BFSButton.addEventListener('click', () => tree.bfs(1, nodoMeta))
