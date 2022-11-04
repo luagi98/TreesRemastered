@@ -1,3 +1,30 @@
+class Graph {
+
+    constructor(numVertices) {
+        this.numVertices = numVertices;
+        this.adjList = new Map();
+    }
+
+    addNode(node) {
+        this.adjList.set(node, []);
+    }
+    addEdge(from, to) {
+        this.adjList.get(from).push(to);
+        this.adjList.get(to).push(from);
+    }
+    printGraph() {
+        let nodes = this.adjList.keys();
+        for (let node of nodes) {
+            let nodeValues = this.adjList.get(node);
+            let conc = "";
+            for (let value of nodeValues)
+                conc += `${value} `;
+            console.log(`${node} -> ${conc}`);
+        }
+    }
+}
+
+
 const nodosHijo = Number(localStorage.getItem("nodoHijo"))
 const nodosPadre = Number(localStorage.getItem("nodoPadre"))
 const nodoMeta = Number(localStorage.getItem("nodoMeta"))
@@ -8,7 +35,9 @@ const minParents = nivel - 1
 const minNodes = amplitud + nivel - 2
 const parents = new Set()
 
-console.log([nodosHijo, nodosPadre, nodoMeta, amplitud, nivel]);
+const tree = new Graph(nodosHijo + 1)
+
+// console.log([nodosHijo, nodosPadre, nodoMeta, amplitud, nivel]);
 
 const nodes = new vis.DataSet()
 const edges = new vis.DataSet()
@@ -33,9 +62,7 @@ const options = {
 const initTree = () => {
     generateNodes()
     generateBasicEdges()
-    console.log(nodosPadre - minParents, amplitud)
     const [remainingNodesInLastLevel, levelToStart, filledLevel, startNode] = generateRemainingParents();
-    console.log({ remainingNodesInLastLevel, levelToStart, filledLevel, startNode });
     generateRemainingNodes(remainingNodesInLastLevel, levelToStart, filledLevel, startNode)
     network = new vis.Network(container, data, options);
 }
@@ -48,8 +75,6 @@ const generateNodes = () => {
             nodes.add([{ id: index, label: ` ${index} `, title: `Node ${index}`, color: `#3a595c`, font: { color: '#edeef0' } }]);
         }
     }
-    // console.log(nodes);
-
 }
 
 const generateBasicEdges = () => {
@@ -63,20 +88,19 @@ const generateBasicEdges = () => {
     for (let index = 0; index < minParents - 2; index++) {
         edges.add([{ from: index + amplitud + 2, to: index + amplitud + 3 }]);
     }
-    console.log(data);
+    // console.log(data);
 }
 
 const generateRemainingParents = () => {
-    // if ((nodosPadre - minParents) > 0 && amplitud > 1) {
     let remainingParents = nodosPadre - minParents
     let remainingNodesInLevel = 2
     let filledLevel = 1
     let firstParent = 3
     let startNode = minNodes + 2
-    console.log("Entro alv");
+    // console.log("Entro alv");
     while (remainingParents--) {
         if (remainingNodesInLevel !== nivel) {
-            console.log(`remainingNodes: ${remainingNodesInLevel}, firstParent: ${firstParent}`);
+            // console.log(`remainingNodes: ${remainingNodesInLevel}, firstParent: ${firstParent}`);
             if (remainingNodesInLevel == 2) {
                 edges.add([{ from: firstParent, to: startNode++ }]);
             } else {
@@ -90,13 +114,7 @@ const generateRemainingParents = () => {
             filledLevel++
         }
     }
-
-    // console.log([nivel - 2 - (nivel - remainingNodesInLevel), firstParent - 1, filledLevel, startNode]);
     return [(nivel - 2 - (nivel - remainingNodesInLevel)), firstParent - 1, filledLevel, startNode];
-    // }
-    // else {
-    //     return [0, 0, 0, 0]
-    // }
 }
 
 const generateRemainingNodes = (RNILL, levelToStart, filledLevel, startNode) => {
@@ -104,12 +122,10 @@ const generateRemainingNodes = (RNILL, levelToStart, filledLevel, startNode) => 
         filledLevel++
         levelToStart++
     }
-    // console.log({ filledLevel, levelToStart });
     let auxRNILL = RNILL % (nivel - 2)
     let remainingNodes = nodosHijo - startNode + 2
     if (remainingNodes) {
         let remainingAmplitud
-        // console.log({ remainingAmplitud });
         if (auxRNILL > 0) {
             remainingAmplitud = amplitud - filledLevel - 1
             auxRNILL--
@@ -117,12 +133,10 @@ const generateRemainingNodes = (RNILL, levelToStart, filledLevel, startNode) => 
             remainingAmplitud = amplitud - filledLevel
         }
         let startNodeFilling = (nivel - 2) * filledLevel + amplitud - 1
-        console.log({ startNodeFilling });
-        // console.log(`remainingNodes: ${remainingNodes}`);
+        // console.log({ startNodeFilling });
         while (remainingNodes--) {
             if (remainingAmplitud > 0) {
                 edges.add([{ from: levelToStart, to: startNode++ }]);
-                // console.log({ remainingAmplitud });
                 remainingAmplitud--
             } else {
                 levelToStart = startNodeFilling
